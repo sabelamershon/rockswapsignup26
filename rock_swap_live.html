@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock Swap — Volunteer Sign-Up</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --green-deep: #1a5c3a;
+  --green-mid: #2db882;
+  --green-light: #d6f0e8;
+  --amber: #f5c842;
+  --amber-bg: #fef3dc;
+  --coral: #e05a30;
+  --coral-bg: #fdeae4;
+  --bg: #eef4f0;
+  --card: #fff;
+  --text: #1a2e22;
+  --muted: #6b8c76;
+  --border: #d4e8d9;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 2rem 1rem 5rem;
+  color: var(--text);
+}
+
+.page { max-width: 1000px; margin: 0 auto; }
+
+/* Header */
+.hdr { text-align: center; margin-bottom: 2rem; }
+.hdr-gem { font-size: 2.8rem; margin-bottom: .4rem; line-height:1; }
+.hdr h1 { font-size: 2.2rem; font-weight: 900; color: var(--green-deep); letter-spacing:-.03em; }
+.hdr p { color: var(--muted); font-size: 1rem; margin-top: .3rem; font-weight: 600; }
+
+/* Live badge */
+.live-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--green-deep); color: #fff;
+  font-size: 11px; font-weight: 800; letter-spacing:.08em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 99px; margin-top: .6rem;
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green-mid);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+  margin-bottom: 1.25rem;
+}
+.card-title { font-size: 1rem; font-weight: 800; color: var(--green-deep); margin-bottom: 1rem; }
+
+/* Add form */
+.form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.fld { display: flex; flex-direction: column; gap: 4px; }
+.fld label { font-size: 11px; font-weight: 800; color: var(--muted); letter-spacing:.06em; text-transform: uppercase; }
+.fld input {
+  height: 46px; border: 2px solid var(--border); border-radius: 13px;
+  padding: 0 14px; font-family:'Nunito',sans-serif; font-size: 15px; font-weight: 700;
+  color: var(--text); background: #f8fbf8; outline: none;
+  transition: border-color .15s, background .15s;
+}
+.fld input:focus { border-color: var(--green-mid); background: #fff; }
+.fld input[type=text] { min-width: 180px; }
+.fld input[type=time] { min-width: 130px; }
+.sep { font-size: 20px; font-weight: 800; color: #c5d9ca; padding-bottom: 11px; }
+.add-btn {
+  height: 46px; padding: 0 24px;
+  background: var(--green-deep); color: #fff;
+  border: none; border-radius: 13px;
+  font-family:'Nunito',sans-serif; font-size: 15px; font-weight: 800;
+  cursor: pointer; transition: background .15s, transform .1s;
+  white-space: nowrap; align-self: flex-end;
+}
+.add-btn:hover { background: #144d30; }
+.add-btn:active { transform: scale(.97); }
+.add-btn:disabled { background: #aac4b5; cursor: not-allowed; }
+.err { font-size: 13px; color: #c0392b; font-weight: 700; margin-top: 8px; display: none; }
+
+/* Schedule grid */
+.grid-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 680px; }
+
+th.slot-th {
+  padding: 10px 6px 8px; text-align: center; font-size: 11px; font-weight: 800;
+  letter-spacing:.03em; text-transform: uppercase; border-radius: 12px 12px 0 0;
+}
+th .t { font-size: 13px; display: block; margin-bottom: 1px; }
+th .s { font-size: 10px; font-weight: 700; opacity: .65; }
+.th-setup    { background: var(--amber-bg);  color: #92570a; }
+.th-event    { background: var(--green-light); color: #0a5c3c; }
+.th-teardown { background: var(--coral-bg);  color: #8c2e10; }
+.th-num { width: 28px; }
+
+.grid-row td { height: 44px; border-top: 2px solid var(--bg); vertical-align: middle; }
+.rnum { font-size: 11px; color: #ccc; font-weight: 800; text-align: center; }
+.slot-cell { padding: 4px 3px; cursor: default; }
+
+.cell-in {
+  height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  overflow: hidden; padding: 0 8px;
+  white-space: nowrap;
+}
+.cell-in.empty { background: transparent; }
+.cell-in.filled {
+  color: #fff;
+  justify-content: space-between;
+}
+.vname { flex:1; overflow:hidden; text-overflow:ellipsis; }
+.rx {
+  font-size: 13px; font-weight: 800; opacity: .6; cursor: pointer;
+  margin-left: 6px; flex-shrink:0; line-height:1;
+  background: none; border: none; color: #fff; padding: 0;
+  font-family: inherit;
+}
+.rx:hover { opacity: 1; }
+
+/* Count footer */
+.foot-row td {
+  background: #f4f9f5; padding: 8px 4px;
+  text-align: center; border-radius: 0 0 10px 10px;
+}
+.cnt-n { font-size: 17px; font-weight: 800; color: var(--green-deep); }
+.cnt-l { font-size: 10px; font-weight: 700; color: var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+
+/* Legend */
+.legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:1rem; padding-top:1rem; border-top:1.5px solid #f0f4f0; font-size:12px; font-weight:700; color:var(--muted); align-items:center; }
+.ld { width:11px; height:11px; border-radius:50%; display:inline-block; margin-right:4px; }
+
+/* Chips */
+.chips { display:flex; flex-wrap:wrap; gap:8px; }
+.chip {
+  padding: 5px 14px; border-radius: 99px; font-size: 13px; font-weight: 700; color:#fff;
+  display:flex; align-items:center; gap:6px;
+}
+.chip small { opacity:.7; font-weight:600; }
+.chip-x { cursor:pointer; opacity:.6; font-size:12px; background:none;border:none;color:#fff;font-family:inherit;font-weight:800;padding:0; }
+.chip-x:hover { opacity:1; }
+.no-vols { font-size:13px; color:#b0c8b8; font-style:italic; }
+
+/* Status bar */
+.status { font-size:12px; color:var(--muted); font-weight:600; margin-top:.75rem; min-height:18px; }
+.status.saving { color: var(--green-mid); }
+.status.err { color: #c0392b; }
+
+/* Loading overlay */
+#loading {
+  text-align: center; padding: 3rem;
+  font-size: 15px; font-weight: 700; color: var(--muted);
+}
+.spin {
+  display: inline-block; width: 28px; height: 28px;
+  border: 3px solid var(--border); border-top-color: var(--green-mid);
+  border-radius: 50%; animation: spin .8s linear infinite;
+  margin-bottom: .75rem;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hdr">
+    <div class="hdr-gem">💎</div>
+    <h1>Rock Swap</h1>
+    <p>Volunteer sign-up — add your name and the times you can help!</p>
+    <span class="live-badge"><span class="live-dot"></span>Live — shared with everyone</span>
+  </div>
+
+  <div id="loading">
+    <div class="spin"></div><br>Loading schedule…
+  </div>
+
+  <div id="app" style="display:none">
+
+    <!-- Add form -->
+    <div class="card">
+      <div class="card-title">Sign up to volunteer</div>
+      <div class="form-row">
+        <div class="fld">
+          <label>Your name</label>
+          <input type="text" id="vol-name" placeholder="Jane Smith" maxlength="22" />
+        </div>
+        <div class="fld">
+          <label>From</label>
+          <input type="time" id="t-from" value="09:30" min="09:30" max="16:30" />
+        </div>
+        <div class="sep">→</div>
+        <div class="fld">
+          <label>Until</label>
+          <input type="time" id="t-to" value="11:00" min="09:30" max="16:30" />
+        </div>
+        <button class="add-btn" id="add-btn" onclick="addVolunteer()">+ Add me</button>
+      </div>
+      <div class="err" id="err-msg"></div>
+      <div class="status" id="save-status"></div>
+    </div>
+
+    <!-- Schedule -->
+    <div class="card">
+      <div class="card-title">Schedule</div>
+      <div class="grid-scroll">
+        <table>
+          <thead id="g-head"></thead>
+          <tbody id="g-body"></tbody>
+          <tfoot id="g-foot"></tfoot>
+        </table>
+      </div>
+      <div class="legend">
+        <span><span class="ld" style="background:var(--amber)"></span>Setup</span>
+        <span><span class="ld" style="background:var(--green-mid)"></span>Event</span>
+        <span><span class="ld" style="background:var(--coral)"></span>Tear-down</span>
+      </div>
+    </div>
+
+    <!-- Volunteer list -->
+    <div class="card">
+      <div class="card-title">Volunteers signed up</div>
+      <div class="chips" id="chips">
+        <span class="no-vols">No volunteers yet — be the first!</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SLOTS = [
+  {id:'s0',label:'9:30 am',  sub:'Setup',    type:'setup',    start:570, end:600},
+  {id:'s1',label:'10:00 am', sub:'Event',    type:'event',    start:600, end:660},
+  {id:'s2',label:'11:00 am', sub:'Event',    type:'event',    start:660, end:720},
+  {id:'s3',label:'12:00 pm', sub:'Event',    type:'event',    start:720, end:780},
+  {id:'s4',label:'1:00 pm',  sub:'Event',    type:'event',    start:780, end:840},
+  {id:'s5',label:'2:00 pm',  sub:'Event',    type:'event',    start:840, end:900},
+  {id:'s6',label:'3:00 pm',  sub:'Event',    type:'event',    start:900, end:960},
+  {id:'s7',label:'4:00 pm',  sub:'Tear-down',type:'teardown', start:960, end:990},
+];
+
+const COLORS = [
+  '#2a7d4f','#1a6b8c','#7b3fa0','#c0392b','#d48b00',
+  '#1a6b6b','#8c3a1a','#3a5c8c','#5c8c3a','#8c1a5c',
+];
+
+const MAX_ROWS = 8;
+const STORAGE_KEY = 'rockswap-volunteers-v1';
+
+let volunteers = [];
+let colorIdx = 0;
+let saving = false;
+
+// ── Storage helpers ──────────────────────────────────
+async function load() {
+  try {
+    const res = await window.storage.get(STORAGE_KEY, true);
+    if (res && res.value) {
+      const data = JSON.parse(res.value);
+      volunteers = data.volunteers || [];
+      colorIdx = data.colorIdx || 0;
+    }
+  } catch(e) {
+    volunteers = [];
+    colorIdx = 0;
+  }
+}
+
+async function save() {
+  saving = true;
+  setStatus('Saving…', 'saving');
+  try {
+    await window.storage.set(STORAGE_KEY, JSON.stringify({ volunteers, colorIdx }), true);
+    setStatus('Saved — visible to everyone ✓', '');
+    setTimeout(() => setStatus('', ''), 2500);
+  } catch(e) {
+    setStatus('Could not save — changes are local only', 'err');
+  }
+  saving = false;
+}
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('save-status');
+  el.textContent = msg;
+  el.className = 'status ' + cls;
+}
+
+// ── Time helpers ─────────────────────────────────────
+function toMin(t) { const [h,m]=t.split(':').map(Number); return h*60+m; }
+function fmtMin(m) {
+  const h=Math.floor(m/60), mn=m%60, ampm=h>=12?'pm':'am';
+  const h12=h>12?h-12:h===0?12:h;
+  return mn===0?`${h12}${ampm}`:`${h12}:${String(mn).padStart(2,'0')}${ampm}`;
+}
+function overlaps(slot,from,to){ return from<slot.end && to>slot.start; }
+
+// ── Add volunteer ─────────────────────────────────────
+function addVolunteer() {
+  if (saving) return;
+  const name = document.getElementById('vol-name').value.trim();
+  const from = document.getElementById('t-from').value;
+  const to   = document.getElementById('t-to').value;
+  const err  = document.getElementById('err-msg');
+  err.style.display = 'none';
+
+  if (!name) { showErr('Please enter your name.'); return; }
+  const fromMin = toMin(from), toMin_ = toMin(to);
+  if (toMin_ <= fromMin)  { showErr('End time must be after start time.'); return; }
+  if (fromMin < 570)       { showErr('Earliest slot starts at 9:30 am.'); return; }
+  if (toMin_ > 990)        { showErr('Latest slot ends at 4:30 pm.'); return; }
+
+  const covered = SLOTS.filter(s => overlaps(s, fromMin, toMin_));
+  if (!covered.length)     { showErr("Your times don't overlap any available slot."); return; }
+
+  const row = findRow(covered.map(s=>s.id));
+  if (row === -1)          { showErr('All rows are full for those times.'); return; }
+
+  const color = COLORS[colorIdx % COLORS.length];
+  colorIdx++;
+  volunteers.push({ id: Date.now(), name, fromMin, toMin: toMin_, color, row, slotIds: covered.map(s=>s.id) });
+
+  document.getElementById('vol-name').value = '';
+  render();
+  save();
+}
+
+function findRow(slotIds) {
+  for (let r=0; r<MAX_ROWS; r++) {
+    if (!volunteers.some(v => v.row===r && v.slotIds.some(sid=>slotIds.includes(sid)))) return r;
+  }
+  return -1;
+}
+
+function removeVolunteer(id) {
+  volunteers = volunteers.filter(v=>v.id!==id);
+  render();
+  save();
+}
+
+function showErr(msg) {
+  const e = document.getElementById('err-msg');
+  e.textContent = msg; e.style.display='block';
+}
+
+// ── Render ───────────────────────────────────────────
+function render() {
+  renderHead(); renderBody(); renderFoot(); renderChips();
+}
+
+function renderHead() {
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<th class="slot-th th-num"></th>';
+  SLOTS.forEach(s => {
+    tr.innerHTML += `<th class="slot-th th-${s.type}"><span class="t">${s.label}</span><span class="s">${s.sub}</span></th>`;
+  });
+  const h = document.getElementById('g-head');
+  h.innerHTML=''; h.appendChild(tr);
+}
+
+function renderBody() {
+  const tb = document.getElementById('g-body');
+  tb.innerHTML='';
+  for (let r=0; r<MAX_ROWS; r++) {
+    const tr = document.createElement('tr');
+    tr.className='grid-row';
+    tr.innerHTML=`<td class="rnum">${r+1}</td>`;
+    let si=0;
+    while(si<SLOTS.length){
+      const slot=SLOTS[si];
+      const vol=volunteers.find(v=>v.row===r && v.slotIds.includes(slot.id));
+      if(vol){
+        let span=0;
+        for(let k=si;k<SLOTS.length;k++){
+          if(vol.slotIds.includes(SLOTS[k].id)) span++; else break;
+        }
+        const td=document.createElement('td');
+        td.className='slot-cell'; td.colSpan=span;
+        td.innerHTML=`<div class="cell-in filled" style="background:${vol.color}">
+          <span class="vname">${vol.name}</span>
+          <button class="rx" onclick="removeVolunteer(${vol.id})" title="Remove">✕</button>
+        </div>`;
+        tr.appendChild(td); si+=span;
+      } else {
+        const td=document.createElement('td');
+        td.className='slot-cell';
+        td.innerHTML='<div class="cell-in empty"></div>';
+        tr.appendChild(td); si++;
+      }
+    }
+    tb.appendChild(tr);
+  }
+}
+
+function renderFoot() {
+  const tf=document.getElementById('g-foot');
+  tf.innerHTML='';
+  const tr=document.createElement('tr');
+  tr.className='foot-row';
+  tr.innerHTML='<td></td>';
+  SLOTS.forEach(s=>{
+    const n=volunteers.filter(v=>v.slotIds.includes(s.id)).length;
+    tr.innerHTML+=`<td><div class="cnt-n">${n}</div><div class="cnt-l">signed up</div></td>`;
+  });
+  tf.appendChild(tr);
+}
+
+function renderChips() {
+  const wrap=document.getElementById('chips');
+  if(!volunteers.length){ wrap.innerHTML='<span class="no-vols">No volunteers yet — be the first!</span>'; return; }
+  wrap.innerHTML='';
+  volunteers.forEach(v=>{
+    const ch=document.createElement('div');
+    ch.className='chip'; ch.style.background=v.color;
+    ch.innerHTML=`<span>${v.name} <small>${fmtMin(v.fromMin)}–${fmtMin(v.toMin)}</small></span>
+      <button class="chip-x" onclick="removeVolunteer(${v.id})" title="Remove">✕</button>`;
+    wrap.appendChild(ch);
+  });
+}
+
+// ── Poll for updates every 15s ────────────────────────
+async function poll() {
+  try {
+    const res = await window.storage.get(STORAGE_KEY, true);
+    if (res && res.value) {
+      const data = JSON.parse(res.value);
+      // Only re-render if data actually changed
+      if (JSON.stringify(data.volunteers) !== JSON.stringify(volunteers)) {
+        volunteers = data.volunteers || [];
+        colorIdx = data.colorIdx || 0;
+        render();
+      }
+    }
+  } catch(e) {}
+}
+
+// ── Init ─────────────────────────────────────────────
+document.getElementById('vol-name').addEventListener('keydown', e=>{ if(e.key==='Enter') addVolunteer(); });
+
+(async () => {
+  await load();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  render();
+  setInterval(poll, 15000);
+})();
+</script>
+</body>
+</html>
